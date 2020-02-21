@@ -11,6 +11,22 @@ char PostficsCalc::isOperator(char symbol) {
 	}
 }
 
+char PostficsCalc::isPlusMinus(char symbol) {
+	switch (symbol) {
+	case '+':						//begFallthrow
+	case '-':	return symbol;		//endFallthrow
+	default:	return 0;
+	}
+}
+
+char PostficsCalc::isMultDiv(char symbol) {
+	switch (symbol) {
+	case '*':						//begFallthrow
+	case '/':	return symbol;		//endFallthrow
+	default:	return 0;
+	}
+}
+
 void PostficsCalc::err_incorrect_postfix_istring() {
 	cerr << "ERR: incorrect postfics imput string!" << endl;
 	throw logic_error("ERR: incorrect postfics imput string!");
@@ -20,7 +36,7 @@ void PostficsCalc::err_empty_istring() {
 	throw logic_error("ERR: Empty imput string!");
 }
 
-int PostficsCalc::stringCheck(const std::string inputString) {
+int PostficsCalc::stringCheck(const std::string& inputString) {
 	bool digit{ false }, op{ false }, ws{ false };
 	int numBracket{};
 	for (int i = 0; i < inputString.size(); ++i) {
@@ -66,18 +82,43 @@ int PostficsCalc::stringCheck(const std::string inputString) {
 	return 0;
 }
 
+std::string PostficsCalc::addWS(const std::string& inputString) {
+	string editedString;
+
+	for (int i = 0; i < inputString.size(); ++i) {
+		if (i > 0 && inputString[i - 1] != ' ') {
+			if (isdigit(inputString[i]) && !isdigit(inputString[i - 1])) {
+				editedString += ' ';
+			}
+			else if (isOperator(inputString[i])) {
+				editedString += ' ';
+			}
+			else if (inputString[i] == '(') {
+				editedString += ' ';
+			}
+			else if (inputString[i] == ')') {
+				editedString += ' ';
+			}
+		}
+
+		editedString += inputString[i];
+	}
+
+	return editedString;
+}
+
 int PostficsCalc::fromPostfics(const string& inputString) {
 	if (inputString.empty()) {
 		err_empty_istring();
 		return 0;
 	}
 
-	stringstream imputBuffer;	
-	imputBuffer << inputString;
+	stringstream inputBuffer;	
+	inputBuffer << inputString;
 	List numBuffer;
 
 	string currFragment;
-	while (imputBuffer >> currFragment) {
+	while (inputBuffer >> currFragment) {
 		if (isdigit(currFragment[0])) {
 			numBuffer.push_back(stoi(currFragment));
 		}
@@ -113,8 +154,57 @@ std::string PostficsCalc::toPostfics(const std::string& inputString) {
 		err_empty_istring();
 		return inputString;
 	}
+	if (stringCheck(inputString)) {
+		return inputString;
+	}
 
-	stringstream imputBuffer;
-	imputBuffer << inputString;
+	string inString = addWS(inputString);
+	string outString;
+	stringstream inputBuffer;
+	inputBuffer << inString;
 	List operatorBuffer;
+
+	string currFragment;
+	while (inputBuffer >> currFragment) {
+		if (isdigit(currFragment[0])) {
+			outString += currFragment += " ";
+		}
+		else if (currFragment[0] == '(') {
+			operatorBuffer.push_back(static_cast<int>('('));
+		}
+		else if (currFragment[0] == ')') {
+			while (operatorBuffer.back() != static_cast<int>('(')) {
+				outString += static_cast<char>(operatorBuffer.pop_back());
+				outString += ' ';
+			}
+			operatorBuffer.pop_back();
+		}
+		else if (isOperator(currFragment[0])) {
+			if (isMultDiv(currFragment[0])) {
+				while (operatorBuffer.size() > 0 && isMultDiv(static_cast<char>(operatorBuffer.back()))) {
+					outString += static_cast<char>(operatorBuffer.pop_back());
+					outString += ' ';
+				}
+				operatorBuffer.push_back(static_cast<int>(currFragment[0]));
+			}
+			else {
+				while (operatorBuffer.size() > 0 && isOperator(static_cast<char>(operatorBuffer.back()))) {
+					outString += static_cast<char>(operatorBuffer.pop_back());
+					outString += ' ';
+				}
+				operatorBuffer.push_back(static_cast<int>(currFragment[0]));
+			}
+		}
+	}
+
+	while (operatorBuffer.size() != 0) {
+		outString += static_cast<char>(operatorBuffer.pop_back());
+		outString += ' ';
+	}
+
+	return outString;
+}
+
+int PostficsCalc::fromNormal(const std::string& inputString) {
+	return fromPostfics(toPostfics(inputString));
 }
