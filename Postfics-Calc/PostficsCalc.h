@@ -1,7 +1,7 @@
 #pragma once
 #include <sstream>
 #include <string>
-#include "List.h"
+#include "Dlist.h"
 
 class PostficsCalc
 {
@@ -27,8 +27,8 @@ private:
 	/*
 		Вывод ошибок
 	*/
-	void err_incorrect_postfix_istring();
-	void err_empty_istring();
+	inline void err_incorrect_postfix_istring();
+	inline void err_empty_istring();
 
 	/*
 		Проверяет, допущены ли в строке ошибки
@@ -45,12 +45,12 @@ public:
 	/*
 		Получает строку в постфиксной форме и возвращает готовый ответ
 	*/
-	int fromPostfics(const std::string& inputString);
+	double fromPostfics(const std::string& inputString);
 
 	/*
 		Получает строку в нормальной форме и возвращает готовый ответ
 	*/
-	int fromNormal(const std::string& inputString);
+	double fromNormal(const std::string& inputString);
 
 	/*
 		Переводит строку из обычной формы в постфиксную

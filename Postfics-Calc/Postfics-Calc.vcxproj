@@ -128,6 +128,7 @@
     <ClCompile Include="PostficsCalc.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Dlist.h" />
     <ClInclude Include="List.h" />
     <ClInclude Include="PostficsCalc.h" />
   </ItemGroup>

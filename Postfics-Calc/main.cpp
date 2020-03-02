@@ -2,8 +2,7 @@
 #include <string>
 #include "PostficsCalc.h"
 
-//todo:: (a + b)(c + d) == (a + b) * (c + d) \
-	Dlist<double>
+//todo:: (a + b)(c + d) == (a + b) * (c + d)
 
 int main() {
 	system("chcp 65001"); system("cls");
