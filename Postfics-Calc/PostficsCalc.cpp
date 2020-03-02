@@ -28,12 +28,12 @@ char PostficsCalc::isMultDiv(char symbol) {
 }
 
 void PostficsCalc::err_incorrect_postfix_istring() {
-	cerr << "ERR: incorrect postfics imput string!" << endl;
-	throw logic_error("ERR: incorrect postfics imput string!");
+	cerr << "ERR: incorrect postfics input string!" << endl;
+	throw logic_error("ERR: incorrect postfics input string!");
 }
 void PostficsCalc::err_empty_istring() {
-	cerr << "ERR: Empty imput string!" << endl;
-	throw logic_error("ERR: Empty imput string!");
+	cerr << "ERR: Empty input string!" << endl;
+	throw logic_error("ERR: Empty input string!");
 }
 
 int PostficsCalc::stringCheck(const std::string& inputString) {
@@ -123,12 +123,13 @@ int PostficsCalc::fromPostfics(const string& inputString) {
 			numBuffer.push_back(stoi(currFragment));
 		}
 		else if (isOperator(currFragment[0])) {
-			if (numBuffer.size() < 2) {
+			if (numBuffer.size() < 2 && !isPlusMinus(currFragment[0]) || numBuffer.size() < 1) {
 				err_incorrect_postfix_istring();
 				return 0;
 			}
 			int a = numBuffer.pop_back();
-			int b = numBuffer.pop_back();
+			int b {};
+			if (numBuffer.size() > 0) b = numBuffer.pop_back();
 			int c{};
 
 			switch (currFragment[0]) {
