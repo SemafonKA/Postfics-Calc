@@ -71,6 +71,8 @@ int PostficsCalc::stringCheck(const std::string& inputString) {
 				--numBracket;
 			}
 			else ++numBracket;
+			digit = false;
+			op = false;
 		}
 		else {
 			cerr << "ERR: unknown symbol in string" << endl;
