@@ -27,7 +27,6 @@ private:
 	/*
 		Вывод ошибок
 	*/
-	inline void err_incorrect_postfix_istring();
 	inline void err_empty_istring();
 
 	/*
@@ -40,6 +39,12 @@ private:
 		Добавляет дополнительные пробелы к входной строке
 	*/
 	std::string addWS(const std::string& inputString);
+
+	/*
+		Добавляет дополнительные нули к входной строке
+		(добавляет нули к дробным числам, нули при унарных операторах)
+	*/
+	std::string addZeros(const std::string& inputString);
 
 public:
 	/*

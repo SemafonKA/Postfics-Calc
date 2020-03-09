@@ -17,6 +17,14 @@ int main() {
 	std::cout << "Эта строка в постфиксной форме: " << calc.toPostfics(str) << std::endl;
 	std::cout << "Результат вычислений: " << calc.fromNormal(str) << std::endl << std::endl;
 
-	system("pause");
+	/*PostficsCalc calc;
+	std::string str;
+	std::getline(std::cin, str);
+
+	std::cout << calc.toPostfics(str) << std::endl;
+	std::cout << calc.fromNormal(str) << std::endl;*/
+
+	std::cout << "\n...для выхода нажмите ввод";
+	std::cin.get();
 	return 0;
 }

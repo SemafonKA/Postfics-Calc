@@ -27,10 +27,6 @@ char PostficsCalc::isMultDiv(char symbol) {
 	}
 }
 
-inline void PostficsCalc::err_incorrect_postfix_istring() {
-	cerr << "ERR: incorrect postfics input string!" << endl;
-	throw logic_error("ERR: incorrect postfics input string!");
-}
 inline void PostficsCalc::err_empty_istring() {
 	cerr << "ERR: Empty input string!" << endl;
 	throw logic_error("ERR: Empty input string!");
@@ -56,7 +52,7 @@ int PostficsCalc::stringCheck(const std::string& inputString) {
 			ws = false;
 		}
 		else if (isOperator(inputString[i])) {
-			if (op == true && ws == true || (i > 0 && isOperator(inputString[i - 1]))) {
+			if (op == true && ws == true && isMultDiv(inputString[i])) {
 				cerr << "ERR: Two operators in a row" << endl;
 				throw logic_error("ERR: Two operators in a row");
 				return i + 1;
@@ -105,14 +101,81 @@ std::string PostficsCalc::addWS(const std::string& inputString) {
 			else if (inputString[i] == ')') {
 				editedString += ' ';
 			}
-		}
+		}/*
 		if ((i == 0 || !isdigit(inputString[i - 1])) && inputString[i] == '.') {
 			editedString += " 0";
-		}
+		}*/
 		editedString += inputString[i];
 	}
 
 	return editedString;
+}
+
+string PostficsCalc::addZeros(const std::string& inputString) {
+	string outputString;
+	bool isPrevNum{ false }, isPrevOp{ true }, isPrevDot{ false };
+	bool isPrevWS{ true }, isDouble{ false };
+	
+	for (int i = 0; i < inputString.size(); ++i) {
+		if (inputString[i] == ' ' && isPrevDot) {
+			outputString += "0";
+
+			isPrevNum	= true;
+			isPrevOp	= false;
+			isPrevDot	= false;
+			isPrevWS	= true;
+			isDouble	= false;
+		}
+		else if (inputString[i] == ' ') {
+			isPrevWS	= true;
+			isPrevDot	= false;
+		}
+		else if (isdigit(inputString[i])) {
+			isPrevNum	= true;
+			isPrevOp	= false;
+			isPrevWS	= false;
+			isPrevDot	= false;
+		}
+		else if (inputString[i] == '.' && isDouble) {
+			//throw logic_error("Too many dots in number");
+			++i;
+			if (i == inputString.size()) break;
+		}
+		else if (inputString[i] == '.' && isPrevWS) {
+			outputString += "0";
+
+			isPrevNum	= true;
+			isPrevOp	= false;
+			isPrevDot	= true;
+			isPrevWS	= false;
+			isDouble	= true;
+		}
+		else if (inputString[i] == '.') {
+			isDouble	= true;
+		}
+		else if (isPlusMinus(inputString[i]) && isPrevOp) {
+			if (!isPrevWS) outputString += ' ';
+			outputString += "0 ";
+
+			isPrevNum	= false;
+			isPrevOp	= true;
+			isPrevDot	= false;
+			isPrevWS	= false;
+		}
+		else if (isOperator(inputString[i])) {
+			if (isPrevOp) throw logic_error("Too many multiply or division operators in a row");
+
+			isPrevNum	= false;
+			isPrevOp	= true;
+			isPrevDot	= false;
+			isPrevWS	= false;
+			isDouble	= false;
+		}
+
+		outputString += inputString[i];
+	}
+
+	return outputString;
 }
 
 double PostficsCalc::fromPostfics(const string& inputString) {
@@ -131,13 +194,13 @@ double PostficsCalc::fromPostfics(const string& inputString) {
 			numBuffer.push_back(stod(currFragment));
 		}
 		else if (isOperator(currFragment[0])) {
-			if (numBuffer.size() < 2 && !isPlusMinus(currFragment[0]) || numBuffer.size() < 1) {
-				err_incorrect_postfix_istring();
+			if (numBuffer.size() < 2) {
+				cerr << "ERR: incorrect postfics input string!" << endl;
+				throw logic_error("ERR: incorrect postfics input string!");
 				return 0;
 			}
 			double a = numBuffer.pop_back();
-			double b {};
-			if (numBuffer.size() > 0) b = numBuffer.pop_back();
+			double b = numBuffer.pop_back();
 			double c{};
 
 			switch (currFragment[0]) {
@@ -146,13 +209,12 @@ double PostficsCalc::fromPostfics(const string& inputString) {
 			case '*': c = b * a; break;
 			case '/': c = b / a; break;
 			}
-
 			numBuffer.push_back(c);
 		}
 	}
-
 	if (numBuffer.size() != 1) {
-		err_incorrect_postfix_istring();		//ERROR_MESSAGE incorrect postfix istring
+		cerr << "ERR: incorrect postfics input string!" << endl;
+		throw logic_error("ERR: incorrect postfics input string!");
 		return 0;
 	}
 	else return numBuffer.pop_back();
@@ -168,6 +230,7 @@ std::string PostficsCalc::toPostfics(const std::string& inputString) {
 	}
 
 	string inString = addWS(inputString);
+	inString = addZeros(inString);
 	string outString;
 	stringstream inputBuffer;
 	inputBuffer << inString;
