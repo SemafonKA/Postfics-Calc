@@ -25,11 +25,6 @@ private:
 	char isMultDiv(char symbol);
 
 	/*
-		Вывод ошибок
-	*/
-	inline void err_empty_istring();
-
-	/*
 		Проверяет, допущены ли в строке ошибки
 		(если нет, возвращает 0, иначе position + 1 - место ошибки)
 	*/
@@ -45,6 +40,11 @@ private:
 		(добавляет нули к дробным числам, нули при унарных операторах)
 	*/
 	std::string addZeros(const std::string& inputString);
+
+	/*
+		Меняет запятые на точки в строке
+	*/
+	std::string comToDot(const std::string& inputString);
 
 public:
 	/*

@@ -27,11 +27,6 @@ char PostficsCalc::isMultDiv(char symbol) {
 	}
 }
 
-inline void PostficsCalc::err_empty_istring() {
-	cerr << "ERR: Empty input string!" << endl;
-	throw logic_error("ERR: Empty input string!");
-}
-
 int PostficsCalc::stringCheck(const std::string& inputString) {
 	bool digit{ false }, op{ false }, ws{ false };
 	int numBracket{};
@@ -40,7 +35,7 @@ int PostficsCalc::stringCheck(const std::string& inputString) {
 			ws = true;
 			continue;
 		}
-		else if (isdigit(inputString[i]) || inputString[i] == '.') {
+		else if (isdigit(inputString[i]) || inputString[i] == '.' || inputString[i] == ',') {
 			if (digit == true && ws == true) {
 				cerr << "ERR: Two numbers in a row" << endl;
 				throw logic_error("ERR: Two numbers in a row");
@@ -84,7 +79,7 @@ int PostficsCalc::stringCheck(const std::string& inputString) {
 	return 0;
 }
 
-std::string PostficsCalc::addWS(const std::string& inputString) {
+string PostficsCalc::addWS(const std::string& inputString) {
 	string editedString;
 
 	for (int i = 0; i < inputString.size(); ++i) {
@@ -101,10 +96,7 @@ std::string PostficsCalc::addWS(const std::string& inputString) {
 			else if (inputString[i] == ')') {
 				editedString += ' ';
 			}
-		}/*
-		if ((i == 0 || !isdigit(inputString[i - 1])) && inputString[i] == '.') {
-			editedString += " 0";
-		}*/
+		}
 		editedString += inputString[i];
 	}
 
@@ -141,8 +133,8 @@ string PostficsCalc::addZeros(const std::string& inputString) {
 			++i;
 			if (i == inputString.size()) break;
 		}
-		else if (inputString[i] == '.' && isPrevWS) {
-			outputString += "0";
+		else if (inputString[i] == '.' && (isPrevWS || isPrevOp)) {
+			outputString += " 0";
 
 			isPrevNum	= true;
 			isPrevOp	= false;
@@ -178,9 +170,20 @@ string PostficsCalc::addZeros(const std::string& inputString) {
 	return outputString;
 }
 
+string PostficsCalc::comToDot(const std::string& inputString) {
+	string outString;
+	for (auto& elem : inputString) {
+		if (elem == ',') outString += '.';
+		else outString += elem;
+	}
+
+	return outString;
+}
+
 double PostficsCalc::fromPostfics(const string& inputString) {
 	if (inputString.empty()) {
-		err_empty_istring();
+		cerr << "ERR: Empty input string!" << endl;
+		throw logic_error("ERR: Empty input string!");
 		return 0;
 	}
 
@@ -220,17 +223,20 @@ double PostficsCalc::fromPostfics(const string& inputString) {
 	else return numBuffer.pop_back();
 }
 
-std::string PostficsCalc::toPostfics(const std::string& inputString) {
+string PostficsCalc::toPostfics(const std::string& inputString) {
 	if (inputString.empty()) {
-		err_empty_istring();
+		cerr << "ERR: Empty input string!" << endl;
+		throw logic_error("ERR: Empty input string!");
 		return inputString;
 	}
 	if (stringCheck(inputString)) {
 		return inputString;
 	}
 
-	string inString = addWS(inputString);
+	string inString = comToDot(inputString);
+	inString = addWS(inString);
 	inString = addZeros(inString);
+
 	string outString;
 	stringstream inputBuffer;
 	inputBuffer << inString;
