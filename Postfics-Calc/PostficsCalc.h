@@ -46,6 +46,8 @@ private:
 	*/
 	std::string comToDot(const std::string& inputString);
 
+	std::string addSkippedMult(const std::string& inputString);
+
 public:
 	/*
 		Получает строку в постфиксной форме и возвращает готовый ответ

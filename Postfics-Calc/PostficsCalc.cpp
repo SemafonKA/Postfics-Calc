@@ -27,7 +27,7 @@ char PostficsCalc::isMultDiv(char symbol) {
 	}
 }
 
-int PostficsCalc::stringCheck(const std::string& inputString) {
+int PostficsCalc::stringCheck(const string& inputString) {
 	bool digit{ false }, op{ false }, ws{ false };
 	int numBracket{};
 	for (int i = 0; i < inputString.size(); ++i) {
@@ -79,7 +79,7 @@ int PostficsCalc::stringCheck(const std::string& inputString) {
 	return 0;
 }
 
-string PostficsCalc::addWS(const std::string& inputString) {
+string PostficsCalc::addWS(const string& inputString) {
 	string editedString;
 
 	for (int i = 0; i < inputString.size(); ++i) {
@@ -103,7 +103,7 @@ string PostficsCalc::addWS(const std::string& inputString) {
 	return editedString;
 }
 
-string PostficsCalc::addZeros(const std::string& inputString) {
+string PostficsCalc::addZeros(const string& inputString) {
 	string outputString;
 	bool isPrevNum{ false }, isPrevOp{ true }, isPrevDot{ false };
 	bool isPrevWS{ true }, isDouble{ false };
@@ -129,7 +129,6 @@ string PostficsCalc::addZeros(const std::string& inputString) {
 			isPrevDot	= false;
 		}
 		else if (inputString[i] == '.' && isDouble) {
-			//throw logic_error("Too many dots in number");
 			++i;
 			if (i == inputString.size()) break;
 		}
@@ -170,7 +169,7 @@ string PostficsCalc::addZeros(const std::string& inputString) {
 	return outputString;
 }
 
-string PostficsCalc::comToDot(const std::string& inputString) {
+string PostficsCalc::comToDot(const string& inputString) {
 	string outString;
 	for (auto& elem : inputString) {
 		if (elem == ',') outString += '.';
@@ -178,6 +177,37 @@ string PostficsCalc::comToDot(const std::string& inputString) {
 	}
 
 	return outString;
+}
+
+string PostficsCalc::addSkippedMult(const string& inputString) {
+	string outputString;
+	bool isPrevNum{}, isPrevBracket{};
+
+	for (int i = 0; i < inputString.size(); ++i) {
+		if (isdigit(inputString[i])) {
+			isPrevNum = true;
+			if (isPrevBracket) {
+				outputString += "* ";
+				isPrevBracket = false;
+			}
+		}
+		else if (isOperator(inputString[i])) {
+			isPrevNum = false;
+			isPrevBracket = false;
+		}
+		else if (inputString[i] == ')') {
+			isPrevBracket = true;
+			isPrevNum = false;
+		}
+		else if (inputString[i] == '(' && isPrevNum) {
+			outputString += "* ";
+			isPrevBracket = false;
+			isPrevNum = false;
+		}
+
+		outputString += inputString[i];
+	}
+	return outputString;
 }
 
 double PostficsCalc::fromPostfics(const string& inputString) {
@@ -223,7 +253,7 @@ double PostficsCalc::fromPostfics(const string& inputString) {
 	else return numBuffer.pop_back();
 }
 
-string PostficsCalc::toPostfics(const std::string& inputString) {
+string PostficsCalc::toPostfics(const string& inputString) {
 	if (inputString.empty()) {
 		cerr << "ERR: Empty input string!" << endl;
 		throw logic_error("ERR: Empty input string!");
@@ -236,6 +266,7 @@ string PostficsCalc::toPostfics(const std::string& inputString) {
 	string inString = comToDot(inputString);
 	inString = addWS(inString);
 	inString = addZeros(inString);
+	inString = addSkippedMult(inString);
 
 	string outString;
 	stringstream inputBuffer;
@@ -283,6 +314,6 @@ string PostficsCalc::toPostfics(const std::string& inputString) {
 	return outString;
 }
 
-double PostficsCalc::fromNormal(const std::string& inputString) {
+double PostficsCalc::fromNormal(const string& inputString) {
 	return fromPostfics(toPostfics(inputString));
 }
