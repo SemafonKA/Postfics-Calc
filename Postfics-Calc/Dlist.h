@@ -43,8 +43,8 @@ private:
 			m_object = object;
 		}
 
-		const int defaultLength = 15;		// Количество данных, выводимых в строку по умолчанию
-		int lineLength{ defaultLength };	// Количество данных, выводимых в строку
+		static constexpr int defaultLength = 15;	// Количество данных, выводимых в строку по умолчанию
+		int lineLength{ defaultLength };			// Количество данных, выводимых в строку
 
 		/* Методы изменения режима вывода */
 		void mode(Mode newMode) { m_mode = newMode; }
