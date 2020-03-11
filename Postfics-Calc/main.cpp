@@ -14,15 +14,13 @@ int main() {
 	std::string str;
 	std::getline(std::cin, str);
 
-	std::cout << "Эта строка в постфиксной форме: " << calc.toPostfics(str) << std::endl;
-	std::cout << "Результат вычислений: " << calc.fromNormal(str) << std::endl << std::endl;
-
-	/*PostficsCalc calc;
-	std::string str;
-	std::getline(std::cin, str);
-
-	std::cout << calc.toPostfics(str) << std::endl;
-	std::cout << calc.fromNormal(str) << std::endl;*/
+	try {
+		std::cout << "Эта строка в постфиксной форме: " << calc.toPostfics(str) << std::endl;
+		std::cout << "Результат вычислений: " << calc.fromNormal(str) << std::endl << std::endl;
+	}
+	catch (std::logic_error error) {
+		std::cerr << error.what() << std::endl;
+	}
 
 	std::cout << "\n...для выхода нажмите ввод";
 	std::cin.get();

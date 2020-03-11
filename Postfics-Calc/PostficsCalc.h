@@ -46,6 +46,10 @@ private:
 	*/
 	std::string comToDot(const std::string& inputString);
 
+	/*
+		Добавляет опущенные знаки умножения 
+		[ (2+5)(1+3) -> (2+5) * (1+3) ]
+	*/
 	std::string addSkippedMult(const std::string& inputString);
 
 public:

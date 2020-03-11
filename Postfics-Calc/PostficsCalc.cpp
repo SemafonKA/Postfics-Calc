@@ -37,8 +37,8 @@ int PostficsCalc::stringCheck(const string& inputString) {
 		}
 		else if (isdigit(inputString[i]) || inputString[i] == '.' || inputString[i] == ',') {
 			if (digit == true && ws == true) {
-				cerr << "ERR: Two numbers in a row" << endl;
-				throw logic_error("ERR: Two numbers in a row");
+				string error = "ERR: Two numbers in a row at " + to_string(i);
+				throw logic_error(error);
 				return i + 1;
 			}
 
@@ -48,8 +48,8 @@ int PostficsCalc::stringCheck(const string& inputString) {
 		}
 		else if (isOperator(inputString[i])) {
 			if (op == true && ws == true && isMultDiv(inputString[i])) {
-				cerr << "ERR: Two operators in a row" << endl;
-				throw logic_error("ERR: Two operators in a row");
+				string error = "ERR: Two operators in a row at " + to_string(i);
+				throw logic_error(error);
 				return i + 1;
 			}
 
@@ -66,14 +66,14 @@ int PostficsCalc::stringCheck(const string& inputString) {
 			op = false;
 		}
 		else {
-			cerr << "ERR: unknown symbol in string" << endl;
-			throw logic_error("ERR: unknown symbol in string");
+			string error = "ERR: unknown symbol in string at " + to_string(i);
+			throw logic_error(error);
 			return i + 1;
 		}
 	}
 	if (numBracket != 0) {
-		cerr << "ERR: not equal num of brackets" << endl;
-		throw logic_error("ERR: not equal num of brackets");
+		string error = "ERR: not equal count of brackets (" + to_string(numBracket) + ")";
+		throw logic_error(error);
 		return numBracket;
 	}
 	return 0;
@@ -154,7 +154,7 @@ string PostficsCalc::addZeros(const string& inputString) {
 			isPrevWS	= false;
 		}
 		else if (isOperator(inputString[i])) {
-			if (isPrevOp) throw logic_error("Too many multiply or division operators in a row");
+			if (isPrevOp) throw logic_error("ERR: Too many multiply or division operators in a row");
 
 			isPrevNum	= false;
 			isPrevOp	= true;
@@ -197,7 +197,6 @@ string PostficsCalc::addSkippedMult(const string& inputString) {
 		}
 		else if (inputString[i] == ')') {
 			isPrevBracket = true;
-			isPrevNum = false;
 		}
 		else if (inputString[i] == '(' && isPrevNum) {
 			outputString += "* ";
@@ -212,7 +211,6 @@ string PostficsCalc::addSkippedMult(const string& inputString) {
 
 double PostficsCalc::fromPostfics(const string& inputString) {
 	if (inputString.empty()) {
-		cerr << "ERR: Empty input string!" << endl;
 		throw logic_error("ERR: Empty input string!");
 		return 0;
 	}
@@ -228,7 +226,6 @@ double PostficsCalc::fromPostfics(const string& inputString) {
 		}
 		else if (isOperator(currFragment[0])) {
 			if (numBuffer.size() < 2) {
-				cerr << "ERR: incorrect postfics input string!" << endl;
 				throw logic_error("ERR: incorrect postfics input string!");
 				return 0;
 			}
@@ -240,13 +237,15 @@ double PostficsCalc::fromPostfics(const string& inputString) {
 			case '+': c = b + a; break;
 			case '-': c = b - a; break;
 			case '*': c = b * a; break;
-			case '/': c = b / a; break;
+			case '/': 
+				if (a == 0) throw logic_error("ERR: division by zero!");
+				c = b / a;
+				break; 
 			}
 			numBuffer.push_back(c);
 		}
 	}
 	if (numBuffer.size() != 1) {
-		cerr << "ERR: incorrect postfics input string!" << endl;
 		throw logic_error("ERR: incorrect postfics input string!");
 		return 0;
 	}
