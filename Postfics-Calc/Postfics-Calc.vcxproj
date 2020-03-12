@@ -123,13 +123,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="List.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="PostficsCalc.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Dlist.h" />
-    <ClInclude Include="List.h" />
     <ClInclude Include="PostficsCalc.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
