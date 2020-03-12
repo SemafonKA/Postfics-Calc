@@ -1,28 +1,29 @@
 #include "PostficsCalc.h"
+#include <sstream>
 using namespace std;
 
 char PostficsCalc::isOperator(char symbol) {
 	switch (symbol) {
-	case '+':									// begFallfrow
+	case '+':									// begin Fallfrow
 	case '-':
 	case '*':
-	case '/':	return symbol;					// endFallthrow
+	case '/':	return symbol;					// end Fallthrow
 	default:	return 0;
 	}
 }
 
 char PostficsCalc::isPlusMinus(char symbol) {
 	switch (symbol) {
-	case '+':						//begFallthrow
-	case '-':	return symbol;		//endFallthrow
+	case '+':						//begin Fallthrow
+	case '-':	return symbol;		//end Fallthrow
 	default:	return 0;
 	}
 }
 
 char PostficsCalc::isMultDiv(char symbol) {
 	switch (symbol) {
-	case '*':						//begFallthrow
-	case '/':	return symbol;		//endFallthrow
+	case '*':						//begin Fallthrow
+	case '/':	return symbol;		//end Fallthrow
 	default:	return 0;
 	}
 }
